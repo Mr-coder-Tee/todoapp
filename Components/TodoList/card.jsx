@@ -30,13 +30,13 @@ const Card = ({ data, props }) => {
 
 
   const today=new Date().getTime();
+  const myDate=new Date(data.date).getTime()
 
-  const distance=data.date-0;
+  const distance=myDate;
   const _hours=Math.floor((distance%(1000*60*60*24)/(1000*60*60)));
   const _minutes=Math.floor((distance%(1000*60*60))/(1000*60));
 
-  console.log('hours--->',_hours)
-  console.log('hours--->',_minutes)
+  console.log('time',distance)
 
 
   useEffect(() => {
@@ -79,7 +79,7 @@ const Card = ({ data, props }) => {
                   style={{ width: 20, height: 20, tintColor: COLORS.darkgray }}
                 />
                 <Text style={{ color: COLORS.darkgray, marginLeft: 1 }}>
-                  {hour + ":" + minute}
+                  {_hours + ":" + _minutes}
                 </Text>
               </View>
             </View>

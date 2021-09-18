@@ -14,6 +14,7 @@ import Card from "./card";
 import Todo from "../../FireFuction";
 
 const Todolist = (props) => {
+  const {navigation}=props
   const day = new Date().getDate();
   const month = new Date().getMonth() + 1;
   const year = new Date().getFullYear();
@@ -81,6 +82,7 @@ const Todolist = (props) => {
         <Text style={{ fontWeight: "bold", ...FONTS.h1 }}>To do list</Text>
         <View style={styles.flexRow}>
           <TouchableOpacity
+          onPress={()=>navigation.navigate('Addtodo')}
             style={{
               width: 40,
               height: 40,
