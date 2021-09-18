@@ -17,6 +17,9 @@ import SwitchSelector from "react-native-switch-selector";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import Todo from '../../FireFuction'
+import { NavigationContainer } from "@react-navigation/native";
+
 //import DatePicker from 'react-native-datepicker' https://www.npmjs.com/package/react-native-datepicker
 
 const width = Dimensions.get("screen").width / 2 - 50;
@@ -31,13 +34,15 @@ const option = [
 
 
 
-const Addtodo = () => {
+const Addtodo = ({ navigation, route }) => {
   const [optionpicker, setOption] = useState();
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [dateIsSet, setDateIsSet] = useState(false);
   const [color,setColor]=useState()
+  
+
 
 
 
@@ -59,13 +64,36 @@ const Addtodo = () => {
 
 
 
+const createTodo=(_title,_desc)=>{
+  const todo={
+    priority:optionpicker,
+    title:_title,
+    desc:_desc,
+    date:date.toString(),
+    isDone:false,
+  }
+  Todo.createTodo(todo).then(()=>{
+    console.log('submited');
+    // NavigationContainer.navigate('Todolist')
+  }).then(
+    err=>console.log('Error:',err)
+  )
+}
+
+
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === "ios");
     setDate(currentDate);
     setDateIsSet(true);
-    console.log("======>", date);
+
+  // const today=new Date().getTime();
+  //   const times=new Date(currentDate).getTime()
+  //   const dis=times-today;
+  //   const daysleft=Math.floor(dis/(1000*60*60*24));
+  //   console.log("======>", daysleft);
+    
   };
   const showMode = (currentMode) => {
     setShow(true);
@@ -209,7 +237,7 @@ const Addtodo = () => {
             initialValues={{ title: "", desc: "" }}
             validateOnMount={true}
             validationSchema={validate}
-            // onSubmit={(value)=>}
+            onSubmit={(value)=>createTodo(value.title,value.desc)}
           >
             {({
               handleChange,

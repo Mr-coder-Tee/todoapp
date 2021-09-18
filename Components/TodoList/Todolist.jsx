@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,16 +7,73 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
+  FlatList,
 } from "react-native";
 import { SIZES, FONTS, COLORS, icons } from "../../consts/index";
 import Card from "./card";
+import Todo from "../../FireFuction";
 
-const Todolist = ({navigation}) => {
+const Todolist = (props) => {
   const day = new Date().getDate();
   const month = new Date().getMonth() + 1;
   const year = new Date().getFullYear();
+  const [todo, SetTodo] = useState();
 
-  console.log(navigation)
+  useEffect(() => {
+    Todo.getData().on("value", (snapshot) => {
+      const TodoList = [];
+      snapshot.forEach((list) => {
+        const key = list.key;
+        const data = list.val();
+
+        TodoList.push({
+          key: key,
+          priority: data.priority,
+          title: data.title,
+          desc: data.desc,
+          date: data.date,
+          isDone: data.isDone,
+        });
+        SetTodo(TodoList);
+      });
+    });
+  }, []);
+
+  console.log("todo-->", todo);
+
+  const Empty = () => (
+    <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
+      <Text style={{ ...FONTS.h2 }}>No Task Today...</Text>
+      <Image
+        source={icons.emptybox}
+        resizeMode="contain"
+        style={{ width: 100, height: 100 }}
+      />
+    </View>
+  );
+
+  const RenderFlatList = () => (
+    <FlatList
+      data={todo}
+      keyExtractor={(item) => `${item.key}`}
+      renderItem={({ item, index }) => {
+        return <Card data={item} props={props}
+        ItemSeparatorComponent={() => {
+          return (
+            <View
+              style={{
+                height: 1,
+                width: SCREEN,
+                backgroundColor: COLORS.black,
+              }}
+            ></View>
+          );
+        }}
+        
+        />;
+      }}
+    />
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -132,7 +189,17 @@ const Todolist = ({navigation}) => {
         </View>
       </View>
 
-      <Card />
+      {!todo ? (
+        <View
+          style={{ justifyContent: "center", alignItems: "center", flex: 1 }}
+        >
+          <Text style={{ ...FONTS.h2 }}>Loading...</Text>
+        </View>
+      ) : todo.length === 0 ? (
+        <Empty />
+      ) : (
+        <RenderFlatList />
+      )}
     </SafeAreaView>
   );
 };

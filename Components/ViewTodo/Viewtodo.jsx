@@ -15,7 +15,12 @@ import {
 import { Header } from "react-native-elements";
 const width=Dimensions.get('screen').width
 
-const Viewtodo = () => {
+const Viewtodo = ({ navigation, route }) => {
+
+
+
+
+
   const LeftComp = () => (
     <View>
       <TouchableOpacity

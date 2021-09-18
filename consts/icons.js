@@ -7,9 +7,10 @@ export const date=require('../assets/icons/date.png')
 export const done=require('../assets/icons/done.png')
 export const edit=require('../assets/icons/edit.png')
 export const dot=require('../assets/icons/dot.png')
+export const emptybox=require('../assets/icons/emptybox.jpg')
 
 
 
 export default{
-del,deleteall,add,clock,back,date,done,edit,dot
+del,deleteall,add,clock,back,date,done,edit,dot,emptybox
 }
