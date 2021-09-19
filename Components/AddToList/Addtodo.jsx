@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Dimensions,
   TextInput,
   Button,
+  ScrollView,
 } from "react-native";
 import { Header } from "react-native-elements";
 import { icons, COLORS, FONTS } from "../../consts";
@@ -17,22 +18,17 @@ import SwitchSelector from "react-native-switch-selector";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import Todo from '../../FireFuction'
-import { NavigationContainer } from "@react-navigation/native";
+import Todo from "../../FireFuction";
 
 //import DatePicker from 'react-native-datepicker' https://www.npmjs.com/package/react-native-datepicker
 
 const width = Dimensions.get("screen").width / 2 - 50;
 
 const option = [
-  { label: "High", value: "High" ,},
+  { label: "High", value: "High" },
   { label: "Medium", value: "Medium" },
   { label: "Low", value: "Low" },
 ];
-
-
-
-
 
 const Addtodo = ({ navigation, route }) => {
   const [optionpicker, setOption] = useState();
@@ -40,47 +36,52 @@ const Addtodo = ({ navigation, route }) => {
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [dateIsSet, setDateIsSet] = useState(false);
-  const [color,setColor]=useState()
-  
+  const [color, setColor] = useState(COLORS.primary);
+
+  // useEffect(() => {
+  //   const setValues = () => {
+  //     if (optionpicker == "High") {
+  //       setColor(COLORS.red);
+  //     } else if (optionpicker == "Medium") {
+  //       setColor(COLORS.orange);
+  //     } else if (optionpicker == "Low") {
+  //       setColor(COLORS.green);
+  //     } else {
+  //       setColor(COLORS.primary);
+  //     }
+  //   };
+  //   setValues();
+  // }, [optionpicker]);
 
 
-
-
-  useEffect(()=>{
-
-  const setValues=()=>{
-    if(optionpicker=='High'){
-      setColor(COLORS.red)
-    }else if(optionpicker=='Medium'){
-      setColor(COLORS.orange)
-    }else if(optionpicker=='Low'){
-      setColor(COLORS.green)
-    }else{
-      setColor(COLORS.primary)
+  const setValues = (opt) => {
+    if (opt == "High") {
+      setColor(COLORS.red);
+    } else if (opt == "Medium") {
+      setColor(COLORS.orange);
+    } else if (opt == "Low") {
+      setColor(COLORS.green);
+    } else {
+      setColor(COLORS.primary);
     }
-  }
-  setValues()
-},[optionpicker])
+    setOption(opt)
+  };
 
-
-
-const createTodo=(_title,_desc)=>{
-  const todo={
-    priority:optionpicker,
-    title:_title,
-    desc:_desc,
-    date:date.toString(),
-    isDone:false,
-  }
-  Todo.createTodo(todo).then(()=>{
-    console.log('submited');
-    // NavigationContainer.navigate('Todolist')
-  }).then(
-    err=>console.log('Error:',err)
-  )
-}
-
-
+  const createTodo = (_title, _desc) => {
+    const todo = {
+      priority: optionpicker,
+      title: _title,
+      desc: _desc,
+      date: date.toString(),
+      isDone: false,
+    };
+    Todo.createTodo(todo)
+      .then(() => {
+        console.log("submited");
+        navigation.navigate("Todolist");
+      })
+      .then((err) => console.log("Adding Error:", err));
+  };
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -88,12 +89,11 @@ const createTodo=(_title,_desc)=>{
     setDate(currentDate);
     setDateIsSet(true);
 
-  // const today=new Date().getTime();
-  //   const times=new Date(currentDate).getTime()
-  //   const dis=times-today;
-  //   const daysleft=Math.floor(dis/(1000*60*60*24));
-  //   console.log("======>", daysleft);
-    
+    // const today=new Date().getTime();
+    //   const times=new Date(currentDate).getTime()
+    //   const dis=times-today;
+    //   const daysleft=Math.floor(dis/(1000*60*60*24));
+    //   console.log("======>", daysleft);
   };
   const showMode = (currentMode) => {
     setShow(true);
@@ -112,6 +112,7 @@ const createTodo=(_title,_desc)=>{
     <View>
       <TouchableOpacity
         style={{ alignItems: "center", justifyContent: "center" }}
+        onPress={() => navigation.goBack()}
       >
         <Image
           source={icons.back}
@@ -152,169 +153,174 @@ const createTodo=(_title,_desc)=>{
         }}
         leftComponent={<LeftComp />}
       />
-      <View style={styles.container}>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={{ ...FONTS.h4, fontWeight: "bold" }}>Priority</Text>
-          {!optionpicker && (
-            <Text
-              style={{
-                paddingLeft: 10,
-                color:  COLORS.danger,
-                ...FONTS.body4,
-              }}
-            >
-              select a priority level
-            </Text>
-          )}
-        </View>
-        <SwitchSelector
-          options={option}
-          initial={0}
-          selectedColor={COLORS.white}
-          buttonColor={ color}
-          borderColor={COLORS.secondary}
-          hasPadding
-          onPress={(value) => setOption(value)}
-        />
-                
-        <View style={{marginTop: 10,}}>
-          {!dateIsSet && (
-            <Text
-              style={{
-                paddingLeft: 10,
-                color: COLORS.danger,
-                ...FONTS.body4,
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ ...FONTS.h4, fontWeight: "bold" }}>Priority</Text>
+            {!optionpicker && (
+              <Text
+                style={{
+                  paddingLeft: 10,
+                  color: COLORS.danger,
+                  ...FONTS.body4,
+                }}
+              >
+                select a priority level
+              </Text>
+            )}
+          </View>
+          <SwitchSelector
+            options={option}
+            initial={0}
+            selectedColor={COLORS.white}
+            buttonColor={color}
+            borderColor={COLORS.secondary}
+            hasPadding
+            onPress={(value) => setValues(value)}
+          />
 
-              }}
-            >
-              select todo date
-            </Text>
-          )}
+          <View style={{ marginTop: 10 }}>
+            {!dateIsSet && (
+              <Text
+                style={{
+                  paddingLeft: 10,
+                  color: COLORS.danger,
+                  ...FONTS.body4,
+                }}
+              >
+                select todo date
+              </Text>
+            )}
 
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <TouchableOpacity
-              onPress={showDatepicker}
+            <View
               style={{
-                width: width,
-                height: 40,
-                borderWidth: 1,
-                borderColor: COLORS.darkgray,
+                flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
-                borderRadius: 10,
-                marginRight: 5,
               }}
             >
-              <Image source={icons.date} style={{ width: 30, height: 30 }} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => showTimepicker()}
-              style={{
-                width: width,
-                height: 40,
-                borderWidth: 1,
-                borderColor: COLORS.darkgray,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 10,
-                marginLeft: 5,
-              }}
+              <TouchableOpacity
+                onPress={showDatepicker}
+                style={{
+                  width: width,
+                  height: 40,
+                  borderWidth: 1,
+                  borderColor: COLORS.darkgray,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 10,
+                  marginRight: 5,
+                }}
+              >
+                <Image source={icons.date} style={{ width: 30, height: 30 }} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => showTimepicker()}
+                style={{
+                  width: width,
+                  height: 40,
+                  borderWidth: 1,
+                  borderColor: COLORS.darkgray,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 10,
+                  marginLeft: 5,
+                }}
+              >
+                <Image source={icons.clock} style={{ width: 30, height: 30 }} />
+              </TouchableOpacity>
+              <View>{show && <DateShow />}</View>
+            </View>
+          </View>
+
+          <View>
+            <Formik
+              initialValues={{ title: "", desc: "" }}
+              validateOnMount={true}
+              validationSchema={validate}
+              onSubmit={(value) => createTodo(value.title, value.desc)}
             >
-              <Image source={icons.clock} style={{ width: 30, height: 30 }} />
-            </TouchableOpacity>
-            <View>{show && <DateShow />}</View>
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                touched,
+                errors,
+                isValid,
+              }) => (
+                <View>
+                  <View>
+                    <TextInput
+                      style={styles.input}
+                      autoCorrect={false}
+                      placeholder="Title"
+                      onChangeText={handleChange("title")}
+                      onBlur={handleBlur("title")}
+                      value={values.title}
+                    />
+                    {errors.title && touched.title && (
+                      <Text
+                        style={{
+                          paddingLeft: 10,
+                          color: COLORS.danger,
+                          ...FONTS.body4,
+                        }}
+                      >
+                        {errors.title}
+                      </Text>
+                    )}
+                  </View>
+
+                  <View>
+                    <TextInput
+                      style={{
+                        padding: 10,
+                        margin: 10,
+                        borderColor: COLORS.darkgray,
+                        borderWidth: 1,
+                        textAlign: "auto",
+                        ...FONTS.h4,
+                      }}
+                      placeholder="Desc"
+                      multiline={true}
+                      numberOfLines={5}
+                      textAlignVertical={"top"}
+                      onChangeText={handleChange("desc")}
+                      onBlur={handleBlur("desc")}
+                      value={values.desc}
+                    />
+                    {errors.desc && touched.desc && (
+                      <Text
+                        style={{
+                          paddingLeft: 10,
+                          marginBottom: 20,
+                          color: COLORS.danger,
+                          ...FONTS.body4,
+                        }}
+                      >
+                        {errors.desc}
+                      </Text>
+                    )}
+                  </View>
+
+                  <Button
+                    onPress={handleSubmit}
+                    disabled={!isValid || !dateIsSet || !optionpicker}
+                    color={
+                      isValid && dateIsSet && optionpicker
+                        ? COLORS.primary
+                        : "#cacfd2"
+                    }
+                    title="+Add to list "
+                    style={styles.btn}
+                  />
+                </View>
+              )}
+            </Formik>
           </View>
         </View>
-
-        <View>
-          <Formik
-            initialValues={{ title: "", desc: "" }}
-            validateOnMount={true}
-            validationSchema={validate}
-            onSubmit={(value)=>createTodo(value.title,value.desc)}
-          >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              touched,
-              errors,
-              isValid,
-            }) => (
-              <View>
-                <View>
-                  <TextInput
-                    style={styles.input}
-                    autoCorrect={false}
-                    placeholder="Title"
-                    onChangeText={handleChange("title")}
-                    onBlur={handleBlur("title")}
-                    value={values.title}
-                  />
-                  {errors.title && touched.title && (
-                    <Text
-                      style={{
-                        paddingLeft: 10,
-                        color: COLORS.danger,
-                        ...FONTS.body4,
-                      }}
-                    >
-                      {errors.title}
-                    </Text>
-                  )}
-                </View>
-
-                <View>
-                  <TextInput
-                    style={{
-                      padding: 10,
-                      margin: 10,
-                      borderColor: COLORS.darkgray,
-                      borderWidth: 1,
-                      textAlign: "auto",
-                      ...FONTS.h4,
-                    }}
-                    placeholder="Desc"
-                    multiline={true}
-                    numberOfLines={5}
-                    textAlignVertical={"top"}
-                    onChangeText={handleChange("desc")}
-                    onBlur={handleBlur("desc")}
-                    value={values.desc}
-                  />
-                  {errors.desc && touched.desc && (
-                    <Text
-                      style={{
-                        paddingLeft: 10,
-                        marginBottom: 20,
-                        color: COLORS.danger,
-                        ...FONTS.body4,
-                      }}
-                    >
-                      {errors.desc}
-                    </Text>
-                  )}
-                </View>
-
-                <Button
-                  onPress={handleSubmit}
-                  disabled={(!isValid || !dateIsSet || !optionpicker)}
-                  color={(isValid && dateIsSet &&optionpicker) ? COLORS.primary : "#cacfd2"}
-                  title="+Add to list "
-                  style={styles.btn}
-                />
-              </View>
-            )}
-          </Formik>
-        </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

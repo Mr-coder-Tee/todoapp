@@ -19,28 +19,41 @@ const Todolist = (props) => {
   const month = new Date().getMonth() + 1;
   const year = new Date().getFullYear();
   const [todo, SetTodo] = useState();
+  const today=new Date().getTime();
 
   useEffect(() => {
-    Todo.getData().on("value", (snapshot) => {
-      const TodoList = [];
-      snapshot.forEach((list) => {
-        const key = list.key;
-        const data = list.val();
-
-        TodoList.push({
-          key: key,
-          priority: data.priority,
-          title: data.title,
-          desc: data.desc,
-          date: data.date,
-          isDone: data.isDone,
+    const getList=()=>{
+      Todo.getData().on("value", (snapshot) => {
+        const TodoList = [];
+        snapshot.forEach((list) => {
+          const key = list.key;
+          const data = list.val();
+  
+          const mytimes=new Date(data.date).getTime()
+          const dis=mytimes-today;
+          const daysleft=Math.floor(dis/(1000*60*60*24))+1;
+  
+          if(daysleft===0){
+            TodoList.push({
+              key: key,
+              priority: data.priority,
+              title: data.title,
+              desc: data.desc,
+              date: data.date,
+              isDone: data.isDone,
+            });
+          }
+  
         });
         SetTodo(TodoList);
+        console.log('Load list====>',TodoList)
       });
-    });
+    }
+
+    getList()
+   
   }, []);
 
-  console.log("todo-->", todo);
 
   const Empty = () => (
     <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
@@ -218,7 +231,8 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     marginTop: StatusBar.currentHeight,
-    padding: 10,
+    paddingLeft:10,
+    paddingRight:10,
   },
 });
 

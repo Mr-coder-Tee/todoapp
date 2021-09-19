@@ -11,20 +11,19 @@ import {
 } from "react-native";
 import { SIZES, FONTS, COLORS, icons } from "../../consts/index";
 import Swipeable from "react-native-gesture-handler/Swipeable";
+import Todo from '../../FireFuction'
 
 const width = Dimensions.get("screen").width - 30;
 
-const Rightswipe = () => (
-  <TouchableOpacity style={{ alignItems: "center", justifyContent: "center" }}>
-    <View style={styles.delete}>
-      <Image source={icons.del} />
-    </View>
-  </TouchableOpacity>
-);
+
+
+
 
 const Card = ({ data, props }) => {
+  const {navigation}=props
   const [color, setColor] = useState();
   const [backgroundcolor, setBackgroundcolor] = useState();
+  const[key,setKey]=useState()
   const [hour, setHour] = useState("20");
   const [minute, setMinute] = useState("05");
 
@@ -36,7 +35,25 @@ const Card = ({ data, props }) => {
   const _hours=Math.floor((distance%(1000*60*60*24)/(1000*60*60)));
   const _minutes=Math.floor((distance%(1000*60*60))/(1000*60));
 
-  console.log('time',distance)
+
+  const deleteTobo=()=>{
+    Todo.deleteTodo(data.key).then(()=>{
+      console.log('todo deleted');
+      navigation.navigate('Todolist')
+    }).catch((err)=>{
+      console.log('Delete Error:',err)
+    })
+  
+  }
+
+  const Rightswipe = () => (
+    <TouchableOpacity style={{ alignItems: "center", justifyContent: "center" }} onPress={()=>deleteTobo}>
+      <View style={styles.delete}>
+        <Image source={icons.del} />
+      </View>
+    </TouchableOpacity>
+  );
+
 
 
   useEffect(() => {
@@ -55,15 +72,17 @@ const Card = ({ data, props }) => {
         setBackgroundcolor(COLORS.primary);
       }
     };
+    setKey(data.key)
     setValues();
   }, []);
 
-  console.log("====>", data);
+  // console.log("====>", data);
 
   return (
-    <Swipeable renderRightActions={Rightswipe}>
+    <Swipeable renderRightActions={Rightswipe} >
       <TouchableOpacity
-        style={{ justifyContent: "center", alignItems: "center" }}
+        style={{ justifyContent: "center", alignItems: "center",marginTop:5 }}
+        onPress={() => navigation.navigate("Viewtodo", { key})}
       >
         <View style={[styles.container, { backgroundColor: backgroundcolor }]}>
           <View style={[styles.line, { backgroundColor: color }]} />
@@ -100,7 +119,8 @@ const styles = StyleSheet.create({
     width: width,
     height: 120,
     borderRadius: 10,
-    marginTop: 20,
+    
+
   },
   line: {
     height: "100%",
