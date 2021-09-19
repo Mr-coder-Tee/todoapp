@@ -32,7 +32,6 @@ const Viewtodo = (props) => {
       seTitle(data.title);
       setDesc(data.desc);
 
-      console.log('--/',data.priority)
       const setValues = () => {
         if (data.priority == "High") {
           setColor(COLORS.red);

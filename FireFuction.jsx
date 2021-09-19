@@ -1,6 +1,6 @@
-import Firebase from './Firebase/Firebase'
+import firebase from './Firebase/Firebase'
 
-const db=Firebase.database().ref('/todo')
+const db=firebase.database().ref('/todo')
 
 class Todo{
 

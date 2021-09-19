@@ -35,7 +35,7 @@ const Addtodo = ({ navigation, route }) => {
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-  const [dateIsSet, setDateIsSet] = useState(false);
+  const [dateIsSet, setDateIsSet] = useState(true);//change this back to false
   const [color, setColor] = useState(COLORS.primary);
 
   // useEffect(() => {
@@ -68,11 +68,15 @@ const Addtodo = ({ navigation, route }) => {
   };
 
   const createTodo = (_title, _desc) => {
+    const _myDate= ' '+date.toString()+'';
+    // const today=new Date().getTime();
+    console.log('_mydate---->',_myDate)
     const todo = {
       priority: optionpicker,
       title: _title,
       desc: _desc,
-      date: date.toString(),
+      // date: 'Sun Sep 19 2021 09:58:31 GMT+0200 (SAST)',
+      date: _myDate,
       isDone: false,
     };
     Todo.createTodo(todo)

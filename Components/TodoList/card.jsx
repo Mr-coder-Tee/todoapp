@@ -37,6 +37,7 @@ const Card = ({ data, props }) => {
 
 
   const deleteTobo=()=>{
+    console.log('clicked')
     Todo.deleteTodo(data.key).then(()=>{
       console.log('todo deleted');
       navigation.navigate('Todolist')
@@ -47,7 +48,7 @@ const Card = ({ data, props }) => {
   }
 
   const Rightswipe = () => (
-    <TouchableOpacity style={{ alignItems: "center", justifyContent: "center" }} onPress={()=>deleteTobo}>
+    <TouchableOpacity style={{ alignItems: "center", justifyContent: "center" }} onPress={()=>deleteTobo()}>
       <View style={styles.delete}>
         <Image source={icons.del} />
       </View>

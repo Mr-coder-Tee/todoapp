@@ -21,6 +21,21 @@ const Todolist = (props) => {
   const [todo, SetTodo] = useState();
   const today=new Date().getTime();
 
+
+  const daleteAll=()=>{
+    console.log('clicked')
+    Todo.deleteAll().then(()=>{
+      console.log('todo deleted');
+      navigation.navigate('Todolist')
+    }).catch((err)=>{
+      console.log('Delete Error:',err)
+    })
+  
+  }
+
+
+
+
   useEffect(() => {
     const getList=()=>{
       Todo.getData().on("value", (snapshot) => {
@@ -28,6 +43,9 @@ const Todolist = (props) => {
         snapshot.forEach((list) => {
           const key = list.key;
           const data = list.val();
+
+        // console.log('data',data)
+
   
           const mytimes=new Date(data.date).getTime()
           const dis=mytimes-today;
@@ -44,9 +62,11 @@ const Todolist = (props) => {
             });
           }
   
+          console.log('Load list====>',TodoList)
         });
         SetTodo(TodoList);
-        console.log('Load list====>',TodoList)
+        console.log('End of list====>',TodoList,'----------------------------')
+
       });
     }
 
@@ -126,6 +146,7 @@ const Todolist = (props) => {
               borderWidth: 1,
               borderColor: "rgba(0,0,0,.3)",
             }}
+            onPress={()=>daleteAll()}
           >
             <Image
               source={icons.deleteall}
