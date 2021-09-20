@@ -35,7 +35,7 @@ const Addtodo = ({ navigation, route }) => {
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-  const [dateIsSet, setDateIsSet] = useState(true);//change this back to false
+  const [dateIsSet, setDateIsSet] = useState(false);//change this back to false
   const [color, setColor] = useState(COLORS.primary);
 
   // useEffect(() => {
@@ -52,6 +52,19 @@ const Addtodo = ({ navigation, route }) => {
   //   };
   //   setValues();
   // }, [optionpicker]);
+
+
+  const doneAlert=()=>{
+    Alert.alert(
+        "Done",
+        "New Todo added!",[
+            {
+                text:'Ok',
+                onPress:()=>navigation.navigate('Todolist'),
+            }
+        ]
+    )
+}
 
 
   const setValues = (opt) => {
@@ -82,7 +95,7 @@ const Addtodo = ({ navigation, route }) => {
     Todo.createTodo(todo)
       .then(() => {
         console.log("submited");
-        navigation.navigate("Todolist");
+        doneAlert()
       })
       .then((err) => console.log("Adding Error:", err));
   };
@@ -284,7 +297,7 @@ const Addtodo = ({ navigation, route }) => {
                         borderColor: COLORS.darkgray,
                         borderWidth: 1,
                         textAlign: "auto",
-                        ...FONTS.h4,
+                        ...FONTS.h2,
                       }}
                       placeholder="Desc"
                       multiline={true}

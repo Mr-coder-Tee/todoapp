@@ -11,6 +11,7 @@ import {
   Image,
   ScrollView,
   Dimensions,
+  Button,
 } from "react-native";
 import { Header } from "react-native-elements";
 import Todo from "../../FireFuction";
@@ -22,15 +23,21 @@ const Viewtodo = (props) => {
   const { key } = props.route.params;
 
   const [_color, setColor] = useState();
-  const [title, seTitle] = useState();
-  const [desc, setDesc] = useState();
-  const [pri, setPri] = useState();
+  const [_title, seTitle] = useState();
+  const [_desc, setDesc] = useState();
+  const [isDone, setIsDone] = useState();
+  const [_pri, setPri] = useState();
+  const [_myDate, setMydate] = useState();
 
   useEffect(() => {
-    Todo.getDataById(key).once("value", (snapshot) => {
+    Todo.getDataById(key).on("value", (snapshot) => {
       const data = snapshot.val();
       seTitle(data.title);
       setDesc(data.desc);
+      setIsDone(data.isDone);
+      setPri(data.priority);
+      setMydate(data.date);
+      // console.log("data from view todo->", data);
 
       const setValues = () => {
         if (data.priority == "High") {
@@ -43,9 +50,33 @@ const Viewtodo = (props) => {
           setColor(COLORS.primary);
         }
       };
-      setValues()
+      setValues();
     });
   }, []);
+
+  const updateDone = () => {
+    // setIsDone(true)
+    const _data = {
+      priority: _pri,
+      title: _title,
+      desc: _desc,
+      date: _myDate,
+      isDone: true,
+    };
+
+    console.log(_data);
+    console.log("title", _title);
+    console.log("date", _myDate);
+    Todo.updateTodo(key, {
+      priority: _pri,
+      title: _title,
+      desc: _desc,
+      date: _myDate,
+      isDone: true,
+    })
+      .then(() => console.log("updated"))
+      .catch((err) => console.log("Update Done Error", err));
+  };
 
   const LeftComp = () => (
     <View>
@@ -65,39 +96,31 @@ const Viewtodo = (props) => {
       </TouchableOpacity>
     </View>
   );
-  const Done = () => (
-    <View>
-      <TouchableOpacity
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "row",
-          backgroundColor: "rgba(0,150,0,.8)",
-          padding: 5,
-          borderRadius: 10,
-        }}
-      >
-        <Text
-          style={{
-            color: COLORS.white,
-            ...FONTS.h4,
-            fontWeight: "bold",
-            marginRight: 5,
-          }}
-        >
-          Completed
-        </Text>
+  const DoneBtn = () => (
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <Button
+        title="Completed"
+        disabled={isDone}
+        onPress={() => updateDone()}
+      />
+      {isDone && (
         <Image
           source={icons.done}
           resizeMode="contain"
-          style={{ width: 20, height: 20, tintColor: COLORS.white }}
+          style={{
+            width: 30,
+            height: 30,
+            marginLeft: 5,
+            tintColor: COLORS.green,
+          }}
         />
-      </TouchableOpacity>
+      )}
     </View>
   );
   const Edit = () => (
     <View>
       <TouchableOpacity
+        onPress={() => navigation.navigate("Edit",{'key':key})}
         style={{
           alignItems: "center",
           justifyContent: "center",
@@ -132,11 +155,15 @@ const Viewtodo = (props) => {
       />
       <ScrollView>
         <View style={styles.titlecontainer}>
-          <View style={{ width: 30,
-    height: 30,
-    borderRadius: 15,
-    borderWidth: 3,
-    borderColor: _color,}} />
+          <View
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: 15,
+              borderWidth: 3,
+              borderColor: _color,
+            }}
+          />
           <Text
             style={{
               ...FONTS.h3,
@@ -145,11 +172,11 @@ const Viewtodo = (props) => {
               marginLeft: 5,
             }}
           >
-            {title}
+            {_title}
           </Text>
         </View>
         <View style={{ padding: 10, marginTop: 20, color: COLORS.black }}>
-          <Text style={{ ...FONTS.body3 }}>{desc}</Text>
+          <Text style={{ ...FONTS.body3 }}>{_desc}</Text>
         </View>
       </ScrollView>
       <View
@@ -166,7 +193,7 @@ const Viewtodo = (props) => {
         }}
       >
         <Edit />
-        <Done />
+        <DoneBtn />
       </View>
     </SafeAreaView>
   );

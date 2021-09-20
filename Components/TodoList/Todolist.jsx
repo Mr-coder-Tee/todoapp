@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  Alert
 } from "react-native";
 import { SIZES, FONTS, COLORS, icons } from "../../consts/index";
 import Card from "./card";
@@ -23,7 +24,7 @@ const Todolist = (props) => {
 
 
   const daleteAll=()=>{
-    console.log('clicked')
+    // console.log('clicked')
     Todo.deleteAll().then(()=>{
       console.log('todo deleted');
       navigation.navigate('Todolist')
@@ -32,6 +33,27 @@ const Todolist = (props) => {
     })
   
   }
+  const deleteAlert=()=>{
+    Alert.alert(
+      "Delete All?",
+      "Are you sure you want to delete the whole list?",
+      [
+        {
+          text:"Cancel",
+          style:'cancel',
+          onPress:()=>console.log('cancel delete')
+
+        },
+        {
+          text:"YES",
+          onPress:()=>daleteAll(),
+        }
+      ]
+    )
+  }
+
+
+ 
 
 
 
@@ -62,10 +84,10 @@ const Todolist = (props) => {
             });
           }
   
-          console.log('Load list====>',TodoList)
+          // console.log('Load list====>',TodoList)
         });
         SetTodo(TodoList);
-        console.log('End of list====>',TodoList,'----------------------------')
+        // console.log('End of list====>',TodoList,'----------------------------')
 
       });
     }
@@ -146,7 +168,7 @@ const Todolist = (props) => {
               borderWidth: 1,
               borderColor: "rgba(0,0,0,.3)",
             }}
-            onPress={()=>daleteAll()}
+            onPress={()=>deleteAlert()}
           >
             <Image
               source={icons.deleteall}
