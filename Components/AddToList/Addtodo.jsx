@@ -38,6 +38,13 @@ const Addtodo = ({ navigation, route }) => {
   const [dateIsSet, setDateIsSet] = useState(false);//change this back to false
   const [color, setColor] = useState(COLORS.primary);
 
+
+
+  const[day,setDay]=useState('01');
+  const[year,setYear]=useState('2021')
+  const[month,setMonth]=useState('02')
+  const[time,setTime]=useState('22:00')
+
   // useEffect(() => {
   //   const setValues = () => {
   //     if (optionpicker == "High") {
@@ -81,21 +88,24 @@ const Addtodo = ({ navigation, route }) => {
   };
 
   const createTodo = (_title, _desc) => {
-    const _myDate= ' '+date.toString()+'';
+    const _myDate=date.toString();
     // const today=new Date().getTime();
-    console.log('_mydate---->',_myDate)
+    let _sendDate=_myDate.substring(0,24)
+
+    console.log('_sendDate---->',_sendDate)
     const todo = {
       priority: optionpicker,
       title: _title,
       desc: _desc,
       // date: 'Sun Sep 19 2021 09:58:31 GMT+0200 (SAST)',
-      date: _myDate,
+      // date: _myDate,
+      date: _sendDate,
       isDone: false,
     };
     Todo.createTodo(todo)
       .then(() => {
         console.log("submited");
-        doneAlert()
+        navigation.navigate('Todolist')
       })
       .then((err) => console.log("Adding Error:", err));
   };
