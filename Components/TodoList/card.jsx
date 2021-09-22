@@ -21,20 +21,14 @@ const Card = ({ data, props }) => {
   const [color, setColor] = useState();
   const [backgroundcolor, setBackgroundcolor] = useState();
   const [key, setKey] = useState();
-  const [hour, setHour] = useState("20");
-  const [minute, setMinute] = useState("05");
 
-  const today = new Date().getTime();
-  const myDate = new Date(data.date).getTime();
 
-  const distance = myDate;
-  const _hours = Math.floor(
-    (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-  );
-  const _minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 
+
+  // console.log('data.time----->',data)
+  
+  
   const deleteTobo = () => {
-    console.log("clicked");
     Todo.deleteTodo(data.key)
       .then(() => {
         console.log("todo deleted");
@@ -89,7 +83,6 @@ const Card = ({ data, props }) => {
     setValues();
   }, []);
 
-  // console.log("====>", data);
 
   return (
     <Swipeable renderRightActions={Rightswipe}>
@@ -111,7 +104,7 @@ const Card = ({ data, props }) => {
                   style={{ width: 20, height: 20, tintColor: COLORS.darkgray }}
                 />
                 <Text style={{ color: COLORS.darkgray, marginLeft: 1 }}>
-                  {_hours + ":" + _minutes}
+                  {data.time}{/*here is time*/}
                 </Text>
               </View>
             </View>

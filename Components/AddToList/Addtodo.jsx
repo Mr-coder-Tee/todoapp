@@ -11,6 +11,7 @@ import {
   TextInput,
   Button,
   ScrollView,
+  ActivityIndicator
 } from "react-native";
 import { Header } from "react-native-elements";
 import { icons, COLORS, FONTS } from "../../consts";
@@ -18,7 +19,9 @@ import SwitchSelector from "react-native-switch-selector";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import moment from "moment";
 import Todo from "../../FireFuction";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 //import DatePicker from 'react-native-datepicker' https://www.npmjs.com/package/react-native-datepicker
 
@@ -37,6 +40,8 @@ const Addtodo = ({ navigation, route }) => {
   const [show, setShow] = useState(false);
   const [dateIsSet, setDateIsSet] = useState(false);//change this back to false
   const [color, setColor] = useState(COLORS.primary);
+
+  const[loading,setLoading]=useState(false)
 
 
 
@@ -74,6 +79,9 @@ const Addtodo = ({ navigation, route }) => {
 }
 
 
+
+
+
   const setValues = (opt) => {
     if (opt == "High") {
       setColor(COLORS.red);
@@ -92,15 +100,18 @@ const Addtodo = ({ navigation, route }) => {
     // const today=new Date().getTime();
     let _sendDate=_myDate.substring(0,24)
 
-    console.log('_sendDate---->',_sendDate)
+
+    let todoDate=moment(_myDate).format('DD-MM-YYYY')
+    let todoTime=moment(_myDate).format('HH:MM')
+
+
     const todo = {
       priority: optionpicker,
       title: _title,
       desc: _desc,
-      // date: 'Sun Sep 19 2021 09:58:31 GMT+0200 (SAST)',
-      // date: _myDate,
-      date: _sendDate,
+      date: todoDate,
       isDone: false,
+      time:todoTime,
     };
     Todo.createTodo(todo)
       .then(() => {

@@ -12,6 +12,8 @@ import {
 } from "react-native";
 import { SIZES, FONTS, COLORS, icons } from "../../consts/index";
 import Card from "./card";
+import moment from "moment";
+
 import Todo from "../../FireFuction";
 
 const Todolist = (props) => {
@@ -24,7 +26,6 @@ const Todolist = (props) => {
 
 
   const daleteAll=()=>{
-    // console.log('clicked')
     Todo.deleteAll().then(()=>{
       console.log('todo deleted');
       navigation.navigate('Todolist')
@@ -66,28 +67,36 @@ const Todolist = (props) => {
           const key = list.key;
           const data = list.val();
 
-        // console.log('data',data)
+        console.log('recived data--->',data)
+
+          var _today = new Date();
+          let todoDate=moment(_today).format('DD-MM-YYYY')
+          console.log("todoDate",todoDate) 
+          let _sendDate=data.date
+          
+
+    if(todoDate==_sendDate)
+      {
+        
+        TodoList.push({
+          key: key,
+          time:data.time,
+          priority: data.priority,
+          title: data.title,
+          desc: data.desc,
+          date: data.date,
+          isDone: data.isDone,
+        });
+      
+      }
+      
+    
 
   
-          const mytimes=new Date(data.date).getTime()
-          const dis=mytimes-today;
-          const daysleft=Math.floor(dis/(1000*60*60*24))+1;
+         
   
-          if(daysleft===0){
-            TodoList.push({
-              key: key,
-              priority: data.priority,
-              title: data.title,
-              desc: data.desc,
-              date: data.date,
-              isDone: data.isDone,
-            });
-          }
-  
-          // console.log('Load list====>',TodoList)
         });
         SetTodo(TodoList);
-        // console.log('End of list====>',TodoList,'----------------------------')
 
       });
     }

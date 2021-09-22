@@ -10,10 +10,11 @@ import {
   Image,
   Dimensions,
   Button,
-  Alert
+  Alert,
 } from "react-native";
 import SwitchSelector from "react-native-switch-selector";
 import { icons, COLORS, FONTS } from "../../consts";
+import moment from "moment";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Header } from "react-native-elements";
@@ -33,6 +34,7 @@ const Edit = ({ navigation, route }) => {
   const [title, setTitle] = useState();
   const [desc, setDesc] = useState();
   const [date, setDate] = useState();
+  const [time, setTime] = useState();
   const [pri, setPri] = useState();
   const [isDone, setIsDone] = useState();
   const [startPriAte, setStartPriAte] = useState(0);
@@ -40,6 +42,7 @@ const Edit = ({ navigation, route }) => {
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [dateIsSet, setDateIsSet] = useState(true); //change this back to false
+  const [datechanged,setDateIsChanged]=useState(false)
   const [color, setColor] = useState(COLORS.primary);
   //   const[descIsSet,setdescIsSet]=useState(true)
   //   const[titleIsSet,settitleIsSet]=useState(true)
@@ -71,38 +74,50 @@ const Edit = ({ navigation, route }) => {
   );
   //!components-----------------------------------------
 
-  
   //functions------------------------------------------
-const doneAlert=()=>{
-    Alert.alert(
-        "Done",
-        "Update complete!",[
-            {
-                text:'Ok',
-                onPress:()=>navigation.navigate('Todolist'),
-            }
-        ]
-    )
-}
+  const doneAlert = () => {
+    Alert.alert("Done", "Update complete!", [
+      {
+        text: "Ok",
+        onPress: () => navigation.navigate("Todolist"),
+      },
+    ]);
+  };
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || clockdate;
     setShow(Platform.OS === "ios");
     setclockdate(currentDate);
     setDateIsSet(true);
+    setDateIsChanged(true)
   };
 
   const handleUpdate = () => {
+    let todoDate=''
+    let todoTime=''
+    if(datechanged){
+      const _myDate = clockdate.toString();
+       todoDate=moment(_myDate).format('DD-MM-YYYY')
+       todoTime=moment(_myDate).format('HH:MM')
+
+    }else{
+      todoDate=date
+      todoTime=time
+    }
+    console.log('Date changed',date,'todoDate:',todoDate)
+    console.log('Time changed',time,'todoTime:',todoTime)
+
     Todo.updateTodo(key, {
       priority: pri,
       title: title,
       desc: desc,
-      date: date,
+      date: todoDate,
+      time: todoTime,
       isDone: false,
     })
       .then(() => console.log("updated"))
       .catch((err) => console.log("Update Error", err));
-      doneAlert()
+    doneAlert();
   };
 
   const showMode = (currentMode) => {
@@ -128,25 +143,21 @@ const doneAlert=()=>{
       setIsDone(data.isDone);
       setPri(data.priority);
       setDate(data.date);
+      setTime(data.time);
 
       const setValues = () => {
         if (data.priority == "High") {
-          console.log("High");
 
           setStartPriAte(0);
         } else if (data.priority == "Medium") {
-          console.log("Medium");
 
           setStartPriAte(1);
         } else if (data.priority == "Low") {
-          console.log("Low");
 
           setStartPriAte(2);
         }
       };
       setValues();
-      console.log("startPriAte", startPriAte);
-
     });
   }, []);
 
