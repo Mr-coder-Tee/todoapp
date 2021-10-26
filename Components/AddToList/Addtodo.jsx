@@ -21,6 +21,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import moment from "moment";
 import Todo from "../../FireFuction";
+import firebase from "../../Firebase/Firebase";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 
 //import DatePicker from 'react-native-datepicker' https://www.npmjs.com/package/react-native-datepicker

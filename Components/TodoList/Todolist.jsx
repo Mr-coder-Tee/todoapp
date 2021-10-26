@@ -16,7 +16,7 @@ import moment from "moment";
 
 import Todo from "../../FireFuction";
 
-const Todolist = (props) => {
+const Todolist = (props) => { 
   const {navigation}=props
   const day = new Date().getDate();
   const month = new Date().getMonth() + 1;
@@ -48,6 +48,23 @@ const Todolist = (props) => {
         {
           text:"YES",
           onPress:()=>daleteAll(),
+        }
+      ]
+    )
+  }
+  const signoutAlert=()=>{
+    Alert.alert(
+      "Sign out",
+      "Are you sure you want to sign out?",
+      [
+        {
+          text:"Cancel",
+          style:'cancel',
+          onPress:()=>console.log("cancal log out")
+        },
+        {
+          text:'Log out',
+          onPress:()=>Todo.signout(navigation)
         }
       ]
     )
@@ -143,6 +160,11 @@ const Todolist = (props) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
+        <TouchableOpacity activeOpacity={0.7} onPress={()=>signoutAlert()} style={{padding:5}}>
+          <Text style={{color:"#6DD5FA"}}>
+            Sign out
+          </Text>
+        </TouchableOpacity>
         <Text style={{ fontWeight: "bold", ...FONTS.h1 }}>To do list</Text>
         <View style={styles.flexRow}>
           <TouchableOpacity
@@ -282,7 +304,7 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    marginTop: StatusBar.currentHeight,
+    marginTop: StatusBar.currentHeight+10,
     paddingLeft:10,
     paddingRight:10,
   },
