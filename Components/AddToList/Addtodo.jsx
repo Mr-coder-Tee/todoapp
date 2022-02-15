@@ -13,7 +13,7 @@ import {
   ScrollView,
   ActivityIndicator
 } from "react-native";
-import { Header } from "react-native-elements";
+import { Header,Icon } from "react-native-elements";
 import { icons, COLORS, FONTS } from "../../consts";
 import SwitchSelector from "react-native-switch-selector";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -23,7 +23,7 @@ import moment from "moment";
 import Todo from "../../FireFuction";
 import firebase from "../../Firebase/Firebase";
 import { Colors } from "react-native/Libraries/NewAppScreen";
-
+//https://dribbble.com/shots/17022467-Task-manager-Mobile-App
 //import DatePicker from 'react-native-datepicker' https://www.npmjs.com/package/react-native-datepicker
 
 const width = Dimensions.get("screen").width / 2 - 50;
@@ -147,20 +147,6 @@ const Addtodo = ({ navigation, route }) => {
     showMode("time");
   };
 
-  const LeftComp = () => (
-    <View>
-      <TouchableOpacity
-        style={{ alignItems: "center", justifyContent: "center" }}
-        onPress={() => navigation.goBack()}
-      >
-        <Image
-          source={icons.back}
-          resizeMode="contain"
-          style={{ width: 20, height: 20, tintColor: COLORS.white }}
-        />
-      </TouchableOpacity>
-    </View>
-  );
 
   const DateShow = () => (
     <DateTimePicker
@@ -180,18 +166,11 @@ const Addtodo = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.safeareaview}>
-      <Header
-        elevated={true}
-        centerComponent={{
-          text: "Add task",
-          style: { color: COLORS.white, ...FONTS.h2, fontWeight: "bold" },
-        }}
-        containerStyle={{
-          backgroundColor: COLORS.primary,
-          alignItems: "center",
-        }}
-        leftComponent={<LeftComp />}
-      />
+     <View style={{flexDirection:'row',justifyContent:'flex-start',paddingHorizontal:15}}>
+       <TouchableOpacity onPress={()=>navigation.goBack()}>
+          <Icon name="keyboard-backspace" type="material"/>
+       </TouchableOpacity>
+     </View>
       <ScrollView>
         <View style={styles.container}>
           <View style={{ flexDirection: "row" }}>
@@ -371,6 +350,7 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 10,
+    marginTop: 50,
   },
   input: {
     width: Dimensions.get("screen").width - 50,

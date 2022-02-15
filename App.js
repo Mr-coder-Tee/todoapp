@@ -10,10 +10,12 @@ import {
   Edit,
   Authentication
 } from "./Components/index";
+
 import firebase from "./Firebase/Firebase";
+import SplashScreen from "./Components/SlashScreen/SplashScreen";
 
 const Stack = createStackNavigator();
-const user = firebase.auth().currentUser;
+const user = true;
 
 export default function App() {
   console.log("user:", user);
@@ -23,10 +25,11 @@ export default function App() {
         screenOptions={{
           headerShown: false
         }}
-        initialRouteName={"Todolist"}
+        initialRouteName={"SplashScreen"}
       >
         {user ? (
           <>
+            <Stack.Screen name="SplashScreen" component={SplashScreen} />
             <Stack.Screen name="Todolist" component={Todolist} />
             <Stack.Screen name="Viewtodo" component={Viewtodo} />
             <Stack.Screen name="Addtodo" component={Addtodo} />

@@ -13,124 +13,104 @@ import {
 import { SIZES, FONTS, COLORS, icons } from "../../consts/index";
 import Card from "./card";
 import moment from "moment";
+import LottieView from "lottie-react-native";
 
 import Todo from "../../FireFuction";
 
-const Todolist = (props) => { 
-  const {navigation}=props
+const Todolist = (props) => {
+  const { navigation } = props;
   const day = new Date().getDate();
   const month = new Date().getMonth() + 1;
   const year = new Date().getFullYear();
   const [todo, SetTodo] = useState();
-  const today=new Date().getTime();
+  const today = new Date().getTime();
 
-
-  const daleteAll=()=>{
-    Todo.deleteAll().then(()=>{
-      console.log('todo deleted');
-      navigation.navigate('Todolist')
-    }).catch((err)=>{
-      console.log('Delete Error:',err)
-    })
-  
-  }
-  const deleteAlert=()=>{
+  const daleteAll = () => {
+    Todo.deleteAll()
+      .then(() => {
+        console.log("todo deleted");
+        navigation.navigate("Todolist");
+      })
+      .catch((err) => {
+        console.log("Delete Error:", err);
+      });
+  };
+  const deleteAlert = () => {
     Alert.alert(
       "Delete All?",
       "Are you sure you want to delete the whole list?",
       [
         {
-          text:"Cancel",
-          style:'cancel',
-          onPress:()=>console.log('cancel delete')
-
+          text: "Cancel",
+          style: "cancel",
+          onPress: () => console.log("cancel delete")
         },
         {
-          text:"YES",
-          onPress:()=>daleteAll(),
+          text: "YES",
+          onPress: () => daleteAll()
         }
       ]
-    )
-  }
-  const signoutAlert=()=>{
-    Alert.alert(
-      "Sign out",
-      "Are you sure you want to sign out?",
-      [
-        {
-          text:"Cancel",
-          style:'cancel',
-          onPress:()=>console.log("cancal log out")
-        },
-        {
-          text:'Log out',
-          onPress:()=>Todo.signout(navigation)
-        }
-      ]
-    )
-  }
-
-
- 
-
-
-
+    );
+  };
+  const signoutAlert = () => {
+    Alert.alert("Sign out", "Are you sure you want to sign out?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+        onPress: () => console.log("cancal log out")
+      },
+      {
+        text: "Log out",
+        onPress: () => Todo.signout(navigation)
+      }
+    ]);
+  };
 
   useEffect(() => {
-    const getList=()=>{
+    const getList = () => {
       Todo.getData().on("value", (snapshot) => {
         const TodoList = [];
         snapshot.forEach((list) => {
           const key = list.key;
           const data = list.val();
 
-        console.log('recived data--->',data)
+          console.log("recived data--->", data);
 
           var _today = new Date();
-          let todoDate=moment(_today).format('DD-MM-YYYY')
-          console.log("todoDate",todoDate) 
-          let _sendDate=data.date
-          
+          let todoDate = moment(_today).format("DD-MM-YYYY");
+          console.log("todoDate", todoDate);
+          let _sendDate = data.date;
 
-    if(todoDate==_sendDate)
-      {
-        
-        TodoList.push({
-          key: key,
-          time:data.time,
-          priority: data.priority,
-          title: data.title,
-          desc: data.desc,
-          date: data.date,
-          isDone: data.isDone,
-        });
-      
-      }
-      
-    
-
-  
-         
-  
+          if (todoDate == _sendDate) {
+            TodoList.push({
+              key: key,
+              time: data.time,
+              priority: data.priority,
+              title: data.title,
+              desc: data.desc,
+              date: data.date,
+              isDone: data.isDone
+            });
+          }
         });
         SetTodo(TodoList);
-
       });
-    }
+    };
 
-    getList()
-   
+    getList();
   }, []);
-
 
   const Empty = () => (
     <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
+      <View style={{ width: 200, height: 200 }}>
+        <LottieView
+          source={require("../../assets/Lottie/emptyBox.json")}
+          autoPlay
+          loop
+        />
+      </View>
+
       <Text style={{ ...FONTS.h2 }}>No Task Today...</Text>
-      <Image
-        source={icons.emptybox}
-        resizeMode="contain"
-        style={{ width: 100, height: 100 }}
-      />
     </View>
   );
 
@@ -139,20 +119,23 @@ const Todolist = (props) => {
       data={todo}
       keyExtractor={(item) => `${item.key}`}
       renderItem={({ item, index }) => {
-        return <Card data={item} props={props}
-        ItemSeparatorComponent={() => {
-          return (
-            <View
-              style={{
-                height: 1,
-                width: SCREEN,
-                backgroundColor: COLORS.black,
-              }}
-            ></View>
-          );
-        }}
-        
-        />;
+        return (
+          <Card
+            data={item}
+            props={props}
+            ItemSeparatorComponent={() => {
+              return (
+                <View
+                  style={{
+                    height: 1,
+                    width: SCREEN,
+                    backgroundColor: COLORS.black
+                  }}
+                ></View>
+              );
+            }}
+          />
+        );
       }}
     />
   );
@@ -160,15 +143,17 @@ const Todolist = (props) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <TouchableOpacity activeOpacity={0.7} onPress={()=>signoutAlert()} style={{padding:5}}>
-          <Text style={{color:"#6DD5FA"}}>
-            Sign out
-          </Text>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => signoutAlert()}
+          style={{ padding: 5 }}
+        >
+          <Text style={{ color: "#6DD5FA" }}>Sign out</Text>
         </TouchableOpacity>
         <Text style={{ fontWeight: "bold", ...FONTS.h1 }}>To do list</Text>
         <View style={styles.flexRow}>
           <TouchableOpacity
-          onPress={()=>navigation.navigate('Addtodo')}
+            onPress={() => navigation.navigate("Addtodo")}
             style={{
               width: 40,
               height: 40,
@@ -177,7 +162,7 @@ const Todolist = (props) => {
               borderRadius: 10,
               marginRight: 10,
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "center"
             }}
           >
             <Image
@@ -197,9 +182,9 @@ const Todolist = (props) => {
               alignItems: "center",
               justifyContent: "center",
               borderWidth: 1,
-              borderColor: "rgba(0,0,0,.3)",
+              borderColor: "rgba(0,0,0,.3)"
             }}
-            onPress={()=>deleteAlert()}
+            onPress={() => deleteAlert()}
           >
             <Image
               source={icons.deleteall}
@@ -214,14 +199,14 @@ const Todolist = (props) => {
           marginTop: 10,
           flexDirection: "row",
           justifyContent: "center",
-          alignItems: "center",
+          alignItems: "center"
         }}
       >
         <View
           style={{
             flexDirection: "row",
             justifyContent: "center",
-            alignItems: "center",
+            alignItems: "center"
           }}
         >
           <Text
@@ -229,7 +214,7 @@ const Todolist = (props) => {
               textAlign: "center",
               ...FONTS.h5,
               fontWeight: "bold",
-              color: COLORS.ligthGray,
+              color: COLORS.ligthGray
             }}
           >
             {day - 1 + "/" + month + "/" + year}
@@ -257,7 +242,7 @@ const Todolist = (props) => {
           style={{
             flexDirection: "row",
             justifyContent: "center",
-            alignItems: "center",
+            alignItems: "center"
           }}
         >
           <Image
@@ -270,7 +255,7 @@ const Todolist = (props) => {
               textAlign: "center",
               ...FONTS.h5,
               fontWeight: "bold",
-              color: COLORS.ligthGray,
+              color: COLORS.ligthGray
             }}
           >
             {day + 1 + "/" + month + "/" + year}
@@ -282,7 +267,13 @@ const Todolist = (props) => {
         <View
           style={{ justifyContent: "center", alignItems: "center", flex: 1 }}
         >
-          <Text style={{ ...FONTS.h2 }}>Loading...</Text>
+          <View style={{ width: 200, height: 200 }}>
+            <LottieView
+              source={require("../../assets/Lottie/loadinghand.json")}
+              autoPlay
+              loop
+            />
+          </View>
         </View>
       ) : todo.length === 0 ? (
         <Empty />
@@ -295,19 +286,19 @@ const Todolist = (props) => {
 
 const styles = StyleSheet.create({
   flexRow: {
-    flexDirection: "row",
+    flexDirection: "row"
   },
   container: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "center"
   },
   safeArea: {
     flex: 1,
-    marginTop: StatusBar.currentHeight+10,
-    paddingLeft:10,
-    paddingRight:10,
-  },
+    marginTop: StatusBar.currentHeight + 10,
+    paddingLeft: 10,
+    paddingRight: 10
+  }
 });
 
 export default Todolist;
