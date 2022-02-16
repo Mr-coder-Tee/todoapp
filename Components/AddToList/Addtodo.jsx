@@ -42,7 +42,7 @@ const option = [
   { label: "Medium", value: "Medium", icon: "waterfall-chart" },
   { label: "Low", value: "Low", icon: "ac-unit" }
 ];
-
+//{icon}
 const Addtodo = ({ navigation, route }) => {
   const [optionpicker, setOption] = useState("Low");
   const [date, setDate] = useState(new Date());
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
     marginTop: 50
   },
   input: {
-    // width: Dimensions.get("screen").width - 50,
+    // width: Dimensions.get("screen").width - 50, 
     height: 60,
 
     // borderWidth: 1,
