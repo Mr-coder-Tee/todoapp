@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { Header } from "react-native-elements";
 import Todo from "../../FireFuction";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const width = Dimensions.get("screen").width;
 
@@ -65,8 +66,6 @@ const Viewtodo = (props) => {
     };
 
     console.log(_data);
-    console.log("title", _title);
-    console.log("date", _myDate);
     Todo.updateTodo(key, {
       priority: _pri,
       title: _title,

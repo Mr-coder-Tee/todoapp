@@ -119,13 +119,16 @@ const Addtodo = ({ navigation, route }) => {
     let todoDate = moment(_myDate).format("DD-MM-YYYY");
     let todoTime = moment(_myDate).format("HH:MM");
 
+    const d = new Date();
+    let timeMili = d.getTime();
     const todo = {
       priority: optionpicker,
       title: _title,
       desc: _desc,
       date: todoDate,
       isDone: false,
-      time: todoTime
+      time: todoTime,
+      todoID:timeMili
     };
     console.log(todo,'<<<<<<<')
     if (!dateIsSet || !optionpicker || _title === "" || _desc === "") {
@@ -139,7 +142,8 @@ const Addtodo = ({ navigation, route }) => {
     } else {
       if(!loading){
         setLoading(true)
-        Todo.createTodo(todo,user)
+       
+        Todo.createTodo(todo,user,timeMili)
           .then(() => {
             console.log("submited");
             // navigation.navigate("Todolist");

@@ -3,16 +3,18 @@ import firebase from './Firebase/Firebase'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const db=firebase.database().ref('/todo')
 const user=firebase.database().ref('/users')
+const makeList=firebase.database().ref('/titles')
 const authe=firebase.auth();
 
 class Todo{
 
     getData(){
-        return db
+        return db.orderByChild('todoID').
     }
 
-    createTodo(data,uid){
-        return db.child(uid).push(data)
+    createTodo(data,uid,time){
+        
+        return db.child(uid).child(time).set(data)//push
     }
     getDataById(key){
         return db.child(key)

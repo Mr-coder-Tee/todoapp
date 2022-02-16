@@ -23,6 +23,8 @@ const Todolist = (props) => {
   const month = new Date().getMonth() + 1;
   const year = new Date().getFullYear();
   const [todo, SetTodo] = useState();
+  const [data, SetData] = useState([]);
+
   const today = new Date().getTime();
 
   const daleteAll = () => {
@@ -72,28 +74,31 @@ const Todolist = (props) => {
         const TodoList = [];
         snapshot.forEach((list) => {
           const key = list.key;
-          const data = list.val();
+          const datas = list.val();
 
-          console.log("recived data--->", data);
+          console.log("recived datas--->", datas);
+          TodoList.push(datas)
+         
 
-          var _today = new Date();
-          let todoDate = moment(_today).format("DD-MM-YYYY");
-          console.log("todoDate", todoDate);
-          let _sendDate = data.date;
+          // var _today = new Date();
+          // let todoDate = moment(_today).format("DD-MM-YYYY");
+          // console.log("todoDate", todoDate);
+          // let _sendDate = datas.date;
 
-          if (todoDate == _sendDate) {
-            TodoList.push({
-              key: key,
-              time: data.time,
-              priority: data.priority,
-              title: data.title,
-              desc: data.desc,
-              date: data.date,
-              isDone: data.isDone
-            });
-          }
+          // if (todoDate == _sendDate) {
+          //   TodoList.push({
+          //     key: key,
+          //     time: datas.time,
+          //     priority: datas.priority,
+          //     title: datas.title,
+          //     desc: datas.desc,
+          //     date: datas.date,
+          //     isDone: datas.isDone
+          //   });
+          // }
         });
         SetTodo(TodoList);
+        SetData(TodoList)
       });
     };
 
@@ -116,7 +121,7 @@ const Todolist = (props) => {
 
   const RenderFlatList = () => (
     <FlatList
-      data={todo}
+      data={data}
       keyExtractor={(item) => `${item.key}`}
       renderItem={({ item, index }) => {
         return (
@@ -263,7 +268,7 @@ const Todolist = (props) => {
         </View>
       </View>
 
-      {!todo ? (
+      {!data ? (
         <View
           style={{ justifyContent: "center", alignItems: "center", flex: 1 }}
         >
@@ -275,7 +280,7 @@ const Todolist = (props) => {
             />
           </View>
         </View>
-      ) : todo.length === 0 ? (
+      ) : data.length === 0 ? (
         <Empty />
       ) : (
         <RenderFlatList />
