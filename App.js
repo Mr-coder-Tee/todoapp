@@ -25,7 +25,7 @@ export default function App() {
         screenOptions={{
           headerShown: false
         }}
-        initialRouteName={"Addtodo"}
+        initialRouteName={"SplashScreen"}
       >
         {user ? (
           <>

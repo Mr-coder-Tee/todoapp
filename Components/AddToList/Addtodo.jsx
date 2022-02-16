@@ -9,12 +9,11 @@ import {
   TouchableOpacity,
   Dimensions,
   TextInput,
-  
   ScrollView,
   ActivityIndicator,
   Alert
 } from "react-native";
-import { Button,Header, Icon } from "react-native-elements";
+import { Button, Header, Icon } from "react-native-elements";
 import { icons, COLORS, FONTS } from "../../consts";
 import SwitchSelector from "react-native-switch-selector";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -24,7 +23,13 @@ import moment from "moment";
 import Todo from "../../FireFuction";
 import firebase from "../../Firebase/Firebase";
 import { Colors } from "react-native/Libraries/NewAppScreen";
-import { Paragraph, Dialog, Portal, Provider } from "react-native-paper";
+import {
+  Paragraph,
+  Dialog,
+  Portal,
+  Provider,
+  Snackbar
+} from "react-native-paper";
 //https://dribbble.com/shots/17022467-Task-manager-Mobile-App
 //import DatePicker from 'react-native-datepicker' https://www.npmjs.com/package/react-native-datepicker
 
@@ -47,7 +52,7 @@ const Addtodo = ({ navigation, route }) => {
   const [icon, setIcon] = useState("ac-unit");
   const [loading, setLoading] = useState(false);
   const [displayDate, setDisplayDae] = useState();
-
+  const [Snackbar, setSnackbar] = useState();
   const [day, setDay] = useState("01");
   const [year, setYear] = useState("2021");
   const [month, setMonth] = useState("02");
@@ -94,7 +99,6 @@ const Addtodo = ({ navigation, route }) => {
   //   }
   //   setOption(opt);
   // };
-  
 
   const createTodo = (_title, _desc) => {
     const _myDate = date.toString();
@@ -112,7 +116,7 @@ const Addtodo = ({ navigation, route }) => {
       isDone: false,
       time: todoTime
     };
-    if(!dateIsSet || !optionpicker||_title===''||_desc===''){
+    if (!dateIsSet || !optionpicker || _title === "" || _desc === "") {
       Alert.alert("Sign out", "Please enter all the fields", [
         {
           text: "OK",
@@ -120,7 +124,7 @@ const Addtodo = ({ navigation, route }) => {
           onPress: () => console.log("ok")
         }
       ]);
-    }else{
+    } else {
       Todo.createTodo(todo)
         .then(() => {
           console.log("submited");
@@ -198,6 +202,16 @@ const Addtodo = ({ navigation, route }) => {
         </View>
         <ScrollView>
           <View style={styles.container}>
+            <Text
+              style={{
+                paddingLeft: 10,
+                ...FONTS.h2,
+                fontWeight: "bold",
+                marginVertical: 10
+              }}
+            >
+              Create Todo
+            </Text>
             <View
               style={{
                 flexDirection: "row",
@@ -257,6 +271,20 @@ const Addtodo = ({ navigation, route }) => {
             </View>
 
             <View>
+              <>
+                {/* <Snackbar
+                  visible={true}
+                  // onDismiss={() => setSnackbar(false)}
+                  action={{
+                    label: 'OK',
+                    onPress: () => {
+                      navigation.navigate('Viewtodo')
+                    },
+                  }}
+                >
+                  <Text>Todo added!</Text>
+                </Snackbar> */}
+              </>
               <Formik
                 initialValues={{ title: "", desc: "" }}
                 validateOnMount={true}
@@ -281,21 +309,24 @@ const Addtodo = ({ navigation, route }) => {
                         borderWidth: 1,
                         height: 60,
                         borderRadius: 15,
-                        paddingHorizontal:5,
-                        marginVertical: 10,
+                        paddingHorizontal: 5,
+                        marginVertical: 10
                       }}
                     >
                       <View
                         style={{
                           justifyContent: "center",
                           alignItems: "center",
-                          backgroundColor: "#DEEDF0" ,
+                          backgroundColor: "#DEEDF0",
                           width: 40,
                           height: 40,
-                          borderRadius: 10,
+                          borderRadius: 10
                         }}
                       >
-                        <Icon name="drive-file-rename-outline" type="material" />
+                        <Icon
+                          name="drive-file-rename-outline"
+                          type="material"
+                        />
                       </View>
                       <TextInput
                         style={styles.input}
@@ -305,48 +336,39 @@ const Addtodo = ({ navigation, route }) => {
                         onBlur={handleBlur("title")}
                         value={values.title}
                       />
-                      {errors.title && touched.title && (
-                        <Text
-                          style={{
-                            paddingLeft: 10,
-                            color: COLORS.danger,
-                            ...FONTS.body4
-                          }}
-                        >
-                          {errors.title}
-                        </Text>
-                      )}
                     </View>
                     {errors.title && touched.title && (
-                        <Text
-                          style={{
-                            paddingLeft: 10,
-                            color: COLORS.danger,
-                            ...FONTS.body4
-                          }}
-                        >
-                          {errors.title}
-                        </Text>
-                      )}
+                      <Text
+                        style={{
+                          paddingLeft: 10,
+                          color: COLORS.danger,
+                          ...FONTS.body4
+                        }}
+                      >
+                        {errors.title}
+                      </Text>
+                    )}
 
-                    <View style={{
+                    <View
+                      style={{
                         flexDirection: "row",
                         // alignItems: "center",
                         borderColor: "rgba(0,0,0,.2)",
                         borderWidth: 1,
                         Minheight: 100,
                         borderRadius: 15,
-                        paddingHorizontal:5,
-                        marginVertical: 10,
-                      }}>
-                        <View
+                        paddingHorizontal: 5,
+                        marginVertical: 10
+                      }}
+                    >
+                      <View
                         style={{
                           justifyContent: "center",
                           alignItems: "center",
                           // backgroundColor: "#DEEDF0" ,
                           width: 40,
                           height: 40,
-                          borderRadius: 10,
+                          borderRadius: 10
                         }}
                       >
                         <Icon name="history-edu" type="material" />
@@ -357,7 +379,7 @@ const Addtodo = ({ navigation, route }) => {
                           margin: 10,
                           borderColor: COLORS.darkgray,
                           // borderWidth: 1,
-                          flex:1,
+                          flex: 1,
                           // backgroundColor: "#DEEDF0" ,
                           textAlign: "auto",
                           ...FONTS.h3
@@ -370,41 +392,36 @@ const Addtodo = ({ navigation, route }) => {
                         onBlur={handleBlur("desc")}
                         value={values.desc}
                       />
-                      {errors.desc && touched.desc && (
-                        <Text
-                          style={{
-                            paddingLeft: 10,
-                            marginBottom: 20,
-                            color: COLORS.danger,
-                            ...FONTS.body4
-                          }}
-                        >
-                          {errors.desc}
-                        </Text>
-                      )}
                     </View>
-                    <Text
-                          style={{
-                            paddingLeft: 10,
-                            marginBottom: 20,
-                            color: COLORS.danger,
-                            ...FONTS.body4
-                          }}
-                        >
-                          {errors.desc}
-                        </Text>
+                    {errors.desc && touched.desc && (
+                      <Text
+                        style={{
+                          paddingLeft: 10,
+                          marginBottom: 20,
+                          color: COLORS.danger,
+                          ...FONTS.body4
+                        }}
+                      >
+                        {errors.desc}
+                      </Text>
+                    )}
 
-                  <View style={{flexDirection:'row',justifyContent:'flex-end',paddingHorizontal:10}}>
-                  <Button
-                      onPress={handleSubmit}
-                      // disabled={!isValid || !dateIsSet || !optionpicker}
-                      
-                      title="+Add to list "
-                      
-                     buttonStyle={{ backgroundColor: COLORS.primary,}}
-                     containerStyle={{width:150,  marginVertical: 10,}}
-                    />
-                  </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "flex-end",
+                        paddingHorizontal: 10
+                      }}
+                    >
+                      <Button
+                        onPress={handleSubmit}
+                        // disabled={!isValid || !dateIsSet || !optionpicker}
+
+                        title="+Add to list "
+                        buttonStyle={{ backgroundColor: COLORS.primary }}
+                        containerStyle={{ width: 150, marginVertical: 10 }}
+                      />
+                    </View>
                   </View>
                 )}
               </Formik>
@@ -469,7 +486,7 @@ const styles = StyleSheet.create({
   input: {
     // width: Dimensions.get("screen").width - 50,
     height: 60,
-    
+
     // borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -479,15 +496,14 @@ const styles = StyleSheet.create({
     lineHeight: 23,
     // backgroundColor: "red",
     flex: 1,
-    borderRadius: 15,
+    borderRadius: 15
     // borderColor: "rgba(0,0,0,.2)"
   },
   btn: {
     position: "absolute",
     bottom: 0,
     marginTop: 30,
-    backgroundColor: "red",
-   
+    backgroundColor: "red"
   },
   somestyle: {
     flexDirection: "row",
@@ -512,3 +528,17 @@ const styles = StyleSheet.create({
 
 export default Addtodo;
 //rgba(127,0,0,4)
+
+/*
+ <Snackbar
+        visible={Snackbar}
+        onDismiss={()=>setSnackbar(false)}
+        action={{
+          label: 'OK',
+          onPress: () => {
+            navigation.navigate('Viewtodo')
+          },
+        }}>
+        Todo added!
+      </Snackbar>
+*/
