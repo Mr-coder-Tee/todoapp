@@ -16,7 +16,8 @@ import {
   ScrollView,
   Dimensions,
   Button,
-  TextInput
+  TextInput,
+  Alert
 } from "react-native";
 import { Header, Icon } from "react-native-elements";
 import Todo from "../../FireFuction";
@@ -182,6 +183,27 @@ const Viewtodo = (props) => {
     </View>
   );
 
+  const backPress=()=>{
+    if(isDscEdit||isTitleEdit||isPriEdit){
+
+      Alert.alert("Update", "Discard new changes?", [
+        {
+          text: "Yes",
+          style: "cancel",
+          onPress: () => navigation.goBack()
+        },
+        {
+          text: "No",
+          style: "ok",
+          onPress: () => {console.log('no')}
+        }
+      ]);
+    }else{
+
+      navigation.goBack()
+    }
+
+  }
 
 
   const cancelEditing=()=>{
@@ -197,11 +219,37 @@ const Viewtodo = (props) => {
     getIcon(oldData.priority)
     setColor(c);
   }
+  const updateHandler=async()=>{
+    const _data = {
+      priority: _pri,
+      title: _title,
+      desc: _desc,
+      date: _myDate,
+      isDone: isDone
+    };
+    const u = await AsyncStorage.getItem("todouser");
+    console.log(_data);
+    Todo.updateTodo(data.key, u, _data)
+      .then(() => {
+        setIsDscEdit(false)
+        setIsTitleEdit(false)
+        setIsPriEdit(false)
+        getUserTodos();
+        Alert.alert("Success", "update compelte", [
+          {
+            text: "OK",
+            style: "OK",
+            onPress: () => console.log("ok")
+          }
+        ]);
+      })
+      .catch((err) => console.log("Update Done Error", err));
+  }
   const UpdateandCancelBtn=()=>(
     <View style={{flexDirection:'row',alignItems:'center'}}>
         <Button title="Cancel" color="red" onPress={()=>cancelEditing()}/>
         <View style={{marginLeft:5}}></View>
-        <Button title="Update"/>
+        <Button title="Update" onPress={()=>updateHandler()}/>
     </View>
   )
 
@@ -220,7 +268,7 @@ const Viewtodo = (props) => {
           marginTop: 50
         }}
       >
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => backPress()}>
           <Icon name="keyboard-backspace" type="material" />
         </TouchableOpacity>
         <Text style={{ ...FONTS.h4, fontWeight: "bold", marginHorizontal: 10 }}>
