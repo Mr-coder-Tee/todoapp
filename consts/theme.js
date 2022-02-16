@@ -13,9 +13,9 @@ export const COLORS={
     purple:"#7a44cf",
 
 
-    orange:'rgb(255,165,0)',
-    green:'rgb(0,128,0)',
-    red:'rgb(255,0,0)',
+    orange:'#FFB740',
+    green:'#93D9A3',
+    red:'#FF2442',
     TransparentOrange:'rgba(255,165,0,.1)',
     TransparentGreen:'rgba(0,128,0,.1)',
     TransparentRed:'rgba(255,0,0,.1)',
