@@ -45,6 +45,7 @@ const Addtodo = ({ navigation, route }) => {
   const [visibility, setVisibity] = useState(false);
   const [icon, setIcon] = useState("ac-unit");
   const [loading, setLoading] = useState(false);
+  const [displayDate, setDisplayDae] = useState();
 
   const [day, setDay] = useState("01");
   const [year, setYear] = useState("2021");
@@ -122,9 +123,15 @@ const Addtodo = ({ navigation, route }) => {
     setShow(Platform.OS === "ios");
     setDate(currentDate);
     setDateIsSet(true);
-    console.log(currentDate,'-------')
-    if(mode==="date"){
+    console.log(currentDate, "-------");
+    if (mode === "date") {
       showMode("time");
+      const d=moment(currentDate).format('d MMM')
+      setDisplayDae(d)
+      console.log(d, "<<<------->>>>>");
+      
+      
+      setShow(false);
     }
     // const today=new Date().getTime();
     //   const times=new Date(currentDate).getTime()
@@ -139,7 +146,6 @@ const Addtodo = ({ navigation, route }) => {
 
   const showDatepicker = () => {
     showMode("date");
-    
   };
 
   const showTimepicker = () => {
@@ -165,6 +171,8 @@ const Addtodo = ({ navigation, route }) => {
   return (
     <Provider>
       <SafeAreaView style={styles.safeareaview}>
+     <View>{show && <DateShow />}</View>
+
         <View
           style={{
             flexDirection: "row",
@@ -186,7 +194,10 @@ const Addtodo = ({ navigation, route }) => {
                 justifyContent: "space-evenly"
               }}
             >
-              <TouchableOpacity style={styles.somestyle} onPress={()=>showDatepicker()}>
+              <TouchableOpacity
+                style={styles.somestyle}
+                onPress={() => showDatepicker()}
+              >
                 <View
                   style={[styles.iconcontainer, { backgroundColor: "#DEEDF0" }]}
                 >
@@ -196,9 +207,15 @@ const Addtodo = ({ navigation, route }) => {
                   <Text style={{ ...FONTS.body4, fontWeight: "bold" }}>
                     Due date
                   </Text>
-                  <Text style={{ ...FONTS.h4, fontWeight: "bold" }}>
-                    1 June
+                  {displayDate ? (
+                    <Text style={{ ...FONTS.h4, fontWeight: "bold" }}>
+                      {displayDate}
+                    </Text>
+                  ):(
+                    <Text style={{ ...FONTS.h4, fontWeight: "bold" }}>
+                    -
                   </Text>
+                  )}
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
@@ -226,15 +243,9 @@ const Addtodo = ({ navigation, route }) => {
                     {optionpicker}
                   </Text>
                 </View>
-                <Icon
-                  name="arrow-drop-down"
-                  type="material"
-                  color="white"
-                />
+                <Icon name="arrow-drop-down" type="material" color="white" />
               </TouchableOpacity>
             </View>
-
-          
 
             <View>
               <Formik
