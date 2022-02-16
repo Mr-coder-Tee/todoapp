@@ -9,11 +9,12 @@ import {
   TouchableOpacity,
   Dimensions,
   TextInput,
-  Button,
+  
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from "react-native";
-import { Header, Icon } from "react-native-elements";
+import { Button,Header, Icon } from "react-native-elements";
 import { icons, COLORS, FONTS } from "../../consts";
 import SwitchSelector from "react-native-switch-selector";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -93,6 +94,7 @@ const Addtodo = ({ navigation, route }) => {
   //   }
   //   setOption(opt);
   // };
+  
 
   const createTodo = (_title, _desc) => {
     const _myDate = date.toString();
@@ -110,12 +112,22 @@ const Addtodo = ({ navigation, route }) => {
       isDone: false,
       time: todoTime
     };
-    Todo.createTodo(todo)
-      .then(() => {
-        console.log("submited");
-        navigation.navigate("Todolist");
-      })
-      .then((err) => console.log("Adding Error:", err));
+    if(!dateIsSet || !optionpicker||_title===''||_desc===''){
+      Alert.alert("Sign out", "Please enter all the fields", [
+        {
+          text: "OK",
+          style: "OK",
+          onPress: () => console.log("ok")
+        }
+      ]);
+    }else{
+      Todo.createTodo(todo)
+        .then(() => {
+          console.log("submited");
+          navigation.navigate("Todolist");
+        })
+        .then((err) => console.log("Adding Error:", err));
+    }
   };
 
   const onChange = (event, selectedDate) => {
@@ -126,11 +138,10 @@ const Addtodo = ({ navigation, route }) => {
     console.log(currentDate, "-------");
     if (mode === "date") {
       showMode("time");
-      const d=moment(currentDate).format('d MMM')
-      setDisplayDae(d)
+      const d = moment(currentDate).format("d MMM");
+      setDisplayDae(d);
       console.log(d, "<<<------->>>>>");
-      
-      
+
       setShow(false);
     }
     // const today=new Date().getTime();
@@ -171,7 +182,7 @@ const Addtodo = ({ navigation, route }) => {
   return (
     <Provider>
       <SafeAreaView style={styles.safeareaview}>
-     <View>{show && <DateShow />}</View>
+        <View>{show && <DateShow />}</View>
 
         <View
           style={{
@@ -211,10 +222,8 @@ const Addtodo = ({ navigation, route }) => {
                     <Text style={{ ...FONTS.h4, fontWeight: "bold" }}>
                       {displayDate}
                     </Text>
-                  ):(
-                    <Text style={{ ...FONTS.h4, fontWeight: "bold" }}>
-                    -
-                  </Text>
+                  ) : (
+                    <Text style={{ ...FONTS.h4, fontWeight: "bold" }}>-</Text>
                   )}
                 </View>
               </TouchableOpacity>
@@ -264,7 +273,30 @@ const Addtodo = ({ navigation, route }) => {
                   isValid
                 }) => (
                   <View>
-                    <View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        borderColor: "rgba(0,0,0,.2)",
+                        borderWidth: 1,
+                        height: 60,
+                        borderRadius: 15,
+                        paddingHorizontal:5,
+                        marginVertical: 10,
+                      }}
+                    >
+                      <View
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          backgroundColor: "#DEEDF0" ,
+                          width: 40,
+                          height: 40,
+                          borderRadius: 10,
+                        }}
+                      >
+                        <Icon name="drive-file-rename-outline" type="material" />
+                      </View>
                       <TextInput
                         style={styles.input}
                         autoCorrect={false}
@@ -285,18 +317,52 @@ const Addtodo = ({ navigation, route }) => {
                         </Text>
                       )}
                     </View>
+                    {errors.title && touched.title && (
+                        <Text
+                          style={{
+                            paddingLeft: 10,
+                            color: COLORS.danger,
+                            ...FONTS.body4
+                          }}
+                        >
+                          {errors.title}
+                        </Text>
+                      )}
 
-                    <View>
+                    <View style={{
+                        flexDirection: "row",
+                        // alignItems: "center",
+                        borderColor: "rgba(0,0,0,.2)",
+                        borderWidth: 1,
+                        Minheight: 100,
+                        borderRadius: 15,
+                        paddingHorizontal:5,
+                        marginVertical: 10,
+                      }}>
+                        <View
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          // backgroundColor: "#DEEDF0" ,
+                          width: 40,
+                          height: 40,
+                          borderRadius: 10,
+                        }}
+                      >
+                        <Icon name="history-edu" type="material" />
+                      </View>
                       <TextInput
                         style={{
                           padding: 10,
                           margin: 10,
                           borderColor: COLORS.darkgray,
-                          borderWidth: 1,
+                          // borderWidth: 1,
+                          flex:1,
+                          // backgroundColor: "#DEEDF0" ,
                           textAlign: "auto",
-                          ...FONTS.h2
+                          ...FONTS.h3
                         }}
-                        placeholder="Desc"
+                        placeholder="Add description"
                         multiline={true}
                         numberOfLines={5}
                         textAlignVertical={"top"}
@@ -317,18 +383,28 @@ const Addtodo = ({ navigation, route }) => {
                         </Text>
                       )}
                     </View>
+                    <Text
+                          style={{
+                            paddingLeft: 10,
+                            marginBottom: 20,
+                            color: COLORS.danger,
+                            ...FONTS.body4
+                          }}
+                        >
+                          {errors.desc}
+                        </Text>
 
-                    <Button
+                  <View style={{flexDirection:'row',justifyContent:'flex-end',paddingHorizontal:10}}>
+                  <Button
                       onPress={handleSubmit}
-                      disabled={!isValid || !dateIsSet || !optionpicker}
-                      color={
-                        isValid && dateIsSet && optionpicker
-                          ? COLORS.primary
-                          : "#cacfd2"
-                      }
+                      // disabled={!isValid || !dateIsSet || !optionpicker}
+                      
                       title="+Add to list "
-                      style={styles.btn}
+                      
+                     buttonStyle={{ backgroundColor: COLORS.primary,}}
+                     containerStyle={{width:150,  marginVertical: 10,}}
                     />
+                  </View>
                   </View>
                 )}
               </Formik>
@@ -391,22 +467,27 @@ const styles = StyleSheet.create({
     marginTop: 50
   },
   input: {
-    width: Dimensions.get("screen").width - 50,
+    // width: Dimensions.get("screen").width - 50,
     height: 60,
-    margin: 12,
-    borderWidth: 1,
+    
+    // borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
     borderColor: COLORS.darkgray,
     padding: 10,
     ...FONTS.h2,
-    lineHeight: 23
+    lineHeight: 23,
+    // backgroundColor: "red",
+    flex: 1,
+    borderRadius: 15,
+    // borderColor: "rgba(0,0,0,.2)"
   },
   btn: {
     position: "absolute",
     bottom: 0,
     marginTop: 30,
-    backgroundColor: "red"
+    backgroundColor: "red",
+   
   },
   somestyle: {
     flexDirection: "row",
