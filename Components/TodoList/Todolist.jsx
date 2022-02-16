@@ -16,6 +16,8 @@ import moment from "moment";
 import LottieView from "lottie-react-native";
 
 import Todo from "../../FireFuction";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Todolist = (props) => {
   const { navigation } = props;
@@ -69,15 +71,24 @@ const Todolist = (props) => {
   };
 
   useEffect(() => {
-    const getList = () => {
-      Todo.getData().on("value", (snapshot) => {
+    const getList =async () => {
+        const id=await AsyncStorage.getItem('todouser')
+
+      Todo.getData(id).on("value", (snapshot) => {
         const TodoList = [];
         snapshot.forEach((list) => {
           const key = list.key;
           const datas = list.val();
 
-          console.log("recived datas--->", datas);
-          TodoList.push(datas)
+          // console.log(key,"recived datas--->", datas);
+          TodoList.push({    key: key,
+            time: datas.time,
+            priority: datas.priority,
+            title: datas.title,
+            desc: datas.desc,
+            date: datas.date,
+            isDone: datas.isDone,
+            todoID:datas.todoID})
          
 
           // var _today = new Date();
@@ -87,13 +98,7 @@ const Todolist = (props) => {
 
           // if (todoDate == _sendDate) {
           //   TodoList.push({
-          //     key: key,
-          //     time: datas.time,
-          //     priority: datas.priority,
-          //     title: datas.title,
-          //     desc: datas.desc,
-          //     date: datas.date,
-          //     isDone: datas.isDone
+          
           //   });
           // }
         });

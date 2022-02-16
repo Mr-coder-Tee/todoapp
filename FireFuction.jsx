@@ -8,19 +8,19 @@ const authe=firebase.auth();
 
 class Todo{
 
-    getData(){
-        return db.orderByChild('todoID').
+    getData(id){
+        return db.child(id)
     }
 
     createTodo(data,uid,time){
         
-        return db.child(uid).child(time).set(data)//push
+        return db.child(uid).push(data)//push
     }
-    getDataById(key){
-        return db.child(key)
+    getDataById(id,key){
+        return db.child(id).child(key)
     }
-    updateTodo(key,data){
-        return db.child(key).update(data)
+    updateTodo(key,id,data){
+        return db.child(id).child(key).update(data)
     }
     deleteTodo(key){
         return db.child(key).remove()

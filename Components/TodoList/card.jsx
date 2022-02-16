@@ -25,7 +25,6 @@ const Card = ({ data, props }) => {
 
 
 
-  // console.log('data.time----->',data)
   
   
   const deleteTobo = () => {
@@ -88,7 +87,7 @@ const Card = ({ data, props }) => {
     <Swipeable renderRightActions={Rightswipe}>
       <TouchableOpacity
         style={{ justifyContent: "center", alignItems: "center", marginTop: 5 }}
-        onPress={() => navigation.navigate("Viewtodo", { key })}
+        onPress={() => navigation.navigate("Viewtodo", { data:data })}
       >
         <View style={[styles.container, { backgroundColor: backgroundcolor }]}>
           <View style={[styles.line, { backgroundColor: color }]} />

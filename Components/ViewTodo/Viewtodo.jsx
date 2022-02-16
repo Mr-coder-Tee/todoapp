@@ -13,7 +13,7 @@ import {
   Dimensions,
   Button,
 } from "react-native";
-import { Header } from "react-native-elements";
+import { Header ,Icon} from "react-native-elements";
 import Todo from "../../FireFuction";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -21,41 +21,32 @@ const width = Dimensions.get("screen").width;
 
 const Viewtodo = (props) => {
   const { navigation } = props;
-  const { key } = props.route.params;
+  const { data } = props.route.params;
+  console.log('data.time----->',data)
 
-  const [_color, setColor] = useState();
-  const [_title, seTitle] = useState();
-  const [_desc, setDesc] = useState();
-  const [isDone, setIsDone] = useState();
-  const [_pri, setPri] = useState();
-  const [_myDate, setMydate] = useState();
+  const [_color, setColor] = useState(data);
+  const [_title, seTitle] = useState(data.title);
+  const [_desc, setDesc] = useState(data.desc);
+  const [isDone, setIsDone] = useState(data.isDone);
+  const [_pri, setPri] = useState(data.priority);
+  const [_myDate, setMydate] = useState(data.date);
+
+  const getColor = (opt) => {
+    if (opt == "High") {
+      return COLORS.red;
+    } else if (opt == "Medium") {
+      return COLORS.orange;
+    } else if (opt == "Low") {
+      return COLORS.green;
+    }
+  };
 
   useEffect(() => {
-    Todo.getDataById(key).on("value", (snapshot) => {
-      const data = snapshot.val();
-      seTitle(data.title);
-      setDesc(data.desc);
-      setIsDone(data.isDone);
-      setPri(data.priority);
-      setMydate(data.date);
-      // console.log("data from view todo->", data);
-
-      const setValues = () => {
-        if (data.priority == "High") {
-          setColor(COLORS.red);
-        } else if (data.priority == "Medium") {
-          setColor(COLORS.orange);
-        } else if (data.priority == "Low") {
-          setColor(COLORS.green);
-        } else {
-          setColor(COLORS.primary);
-        }
-      };
-      setValues();
-    });
+    const c=getColor(data.priority)
+    setColor(c)
   }, []);
 
-  const updateDone = () => {
+  const updateDone = async() => {
     // setIsDone(true)
     const _data = {
       priority: _pri,
@@ -64,16 +55,18 @@ const Viewtodo = (props) => {
       date: _myDate,
       isDone: true,
     };
-
+    const u=await AsyncStorage.getItem('todouser')
     console.log(_data);
-    Todo.updateTodo(key, {
+    Todo.updateTodo(data.key,u, {
       priority: _pri,
       title: _title,
       desc: _desc,
       date: _myDate,
       isDone: true,
     })
-      .then(() => console.log("updated"))
+      .then(() => {
+        setIsDone(true)
+      })
       .catch((err) => console.log("Update Done Error", err));
   };
 
@@ -140,18 +133,25 @@ const Viewtodo = (props) => {
 
   return (
     <SafeAreaView style={styles.safeareaview}>
-      <Header
-        elevated={true}
-        centerComponent={{
-          text: "Today's Task",
-          style: { color: COLORS.white, ...FONTS.h2, fontWeight: "bold" },
-        }}
-        containerStyle={{
-          backgroundColor: COLORS.primary,
-          alignItems: "center",
-        }}
-        leftComponent={<LeftComp />}
-      />
+     <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            paddingHorizontal: 10,
+            marginTop: 20,
+            alignItems: "center",
+            marginVertical: 10
+
+            
+          }}
+        >
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="keyboard-backspace" type="material" />
+          </TouchableOpacity>
+          <Text style={{  ...FONTS.h4,
+                fontWeight: "bold",
+                marginHorizontal: 10}}>View Todo</Text>
+        </View>
       <ScrollView>
         <View style={styles.titlecontainer}>
           <View
@@ -201,7 +201,7 @@ const Viewtodo = (props) => {
 const styles = StyleSheet.create({
   safeareaview: {
     flex: 1,
-    marginTop: StatusBar.currentHeight,
+    // marginTop: StatusBar.currentHeight,
   },
   titlecontainer: {
     flexDirection: "row",
