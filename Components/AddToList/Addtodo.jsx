@@ -30,6 +30,8 @@ import {
   Provider,
   Snackbar
 } from "react-native-paper";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 //https://dribbble.com/shots/17022467-Task-manager-Mobile-App
 //import DatePicker from 'react-native-datepicker' https://www.npmjs.com/package/react-native-datepicker
 
@@ -57,6 +59,7 @@ const Addtodo = ({ navigation, route }) => {
   const [year, setYear] = useState("2021");
   const [month, setMonth] = useState("02");
   const [time, setTime] = useState("22:00");
+  const [user,setUser]=useState()
 
   //93D9A3
 
@@ -68,6 +71,14 @@ const Addtodo = ({ navigation, route }) => {
   //     }
   //   ]);
   // };
+
+  useEffect(()=>{
+    const tryLogin= async()=>{
+      const u=await AsyncStorage.getItem('todouser')
+      setUser(u)
+    }
+    tryLogin()
+},[])
 
   const getColor = (opt) => {
     if (opt == "High") {
@@ -116,8 +127,9 @@ const Addtodo = ({ navigation, route }) => {
       isDone: false,
       time: todoTime
     };
+    console.log(todo,'<<<<<<<')
     if (!dateIsSet || !optionpicker || _title === "" || _desc === "") {
-      Alert.alert("Sign out", "Please enter all the fields", [
+      Alert.alert("Error", "Please enter all the fields", [
         {
           text: "OK",
           style: "OK",
@@ -125,12 +137,23 @@ const Addtodo = ({ navigation, route }) => {
         }
       ]);
     } else {
-      Todo.createTodo(todo)
-        .then(() => {
-          console.log("submited");
-          navigation.navigate("Todolist");
-        })
-        .then((err) => console.log("Adding Error:", err));
+      if(!loading){
+        setLoading(true)
+        Todo.createTodo(todo,user)
+          .then(() => {
+            console.log("submited");
+            // navigation.navigate("Todolist");
+            Alert.alert("Success", "Todo added", [
+              {
+                text: "OK",
+                style: "OK",
+                onPress: () => navigation.navigate("Todolist")
+              }
+            ]);
+          })
+          .catch((err) => console.log("Adding Error:", err));
+        }
+        setLoading(false)
     }
   };
 
@@ -187,6 +210,7 @@ const Addtodo = ({ navigation, route }) => {
     <Provider>
       <SafeAreaView style={styles.safeareaview}>
         <View>{show && <DateShow />}</View>
+        
 
         <View
           style={{
@@ -410,7 +434,8 @@ const Addtodo = ({ navigation, route }) => {
                       style={{
                         flexDirection: "row",
                         justifyContent: "flex-end",
-                        paddingHorizontal: 10
+                        paddingHorizontal: 10,
+                        alignItems: "center"
                       }}
                     >
                       <Button
@@ -420,13 +445,21 @@ const Addtodo = ({ navigation, route }) => {
                         title="+Add to list "
                         buttonStyle={{ backgroundColor: COLORS.primary }}
                         containerStyle={{ width: 150, marginVertical: 10 }}
-                      />
+                      ></Button>
+                      {loading && (
+                        <View
+                          style={{ position: "absolute", top: 10, right: 70 }}
+                        >
+                          <ActivityIndicator size="large" color="#00ff00" />
+                        </View>
+                      )}
                     </View>
                   </View>
                 )}
               </Formik>
             </View>
           </View>
+          
         </ScrollView>
       </SafeAreaView>
 

@@ -1,6 +1,6 @@
 import { useScrollToTop } from '@react-navigation/native';
 import firebase from './Firebase/Firebase'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const db=firebase.database().ref('/todo')
 const user=firebase.database().ref('/users')
 const authe=firebase.auth();
@@ -27,14 +27,19 @@ class Todo{
         return db.remove()
     }
     //sign up with email
-    signupuser(_email, _password, _name,navigation){
-        return firebase.auth().createUserWithEmailAndPassword(_email,_password).then(res=>{
-            res.user.sendEmailVerification().then(action=>{
+  async  signupuser(_email, _password, _name,navigation){
+        return firebase.auth().createUserWithEmailAndPassword(_email,_password).then(async res=>{
+            res.user.sendEmailVerification().then(async action=>{
                 user.child(res.user.uid).set({
                     name:_name,
                     email:_email,
                     uid:res.user.uid,
                 })
+                try {
+                    await AsyncStorage.setItem('todouser', res.user.uid)
+                  } catch (error) {
+                    console.log("send email error: ",error.message)
+                  }
                 navigation.navigate('Todolist');
             }).catch(error=>{
                 console.log("send email error: ",error.message)

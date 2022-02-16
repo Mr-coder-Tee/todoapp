@@ -2,13 +2,22 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import LottieView from "lottie-react-native";
 import { FONTS } from '../../consts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
 
 const SplashScreen = ({navigation}) => {
-    setTimeout(()=>{
-        navigation.navigate('Todolist')
+    
+    setTimeout(async()=>{
+        const value = await AsyncStorage.getItem('todouser')
+        console.log(value,"value")
+        if(value === null){
+            
+            navigation.navigate('Authentication')
+        }else{
+            navigation.navigate('Todolist')
+        }
     },5000)
   return (
     <View style={styles.constainer}>
