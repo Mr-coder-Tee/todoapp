@@ -30,7 +30,6 @@ export default function App() {
       }
       tryLogin()
   },[])
-  console.log(user)
   return (
     <NavigationContainer>
       <Stack.Navigator

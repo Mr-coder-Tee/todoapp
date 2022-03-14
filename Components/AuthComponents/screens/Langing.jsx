@@ -11,7 +11,6 @@ import {
   TouchableOpacity
 } from "react-native";
 import { COLORS, SIZES, FONTS } from "../../../consts/index";
-import { BlurView } from "@react-native-community/blur";
 import { Button, Icon } from "react-native-elements";
 const height = Dimensions.get("screen").height * 0.6;
 import Todo from "../../../FireFuction";
