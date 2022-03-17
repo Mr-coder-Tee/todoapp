@@ -74,7 +74,7 @@ const Todolist = (props) => {
     const getList =async () => {
         const id=await AsyncStorage.getItem('todouser')
 
-      Todo.getData(id).on("value", (snapshot) => {
+      Todo.getData(id).on("child_changed", (snapshot) => {
         const TodoList = [];
         snapshot.forEach((list) => {
           const key = list.key;
@@ -107,6 +107,40 @@ const Todolist = (props) => {
       });
     };
 
+    const onAdd=async()=>{
+      const id=await AsyncStorage.getItem('todouser')
+      Todo.getData(id).on("child_changed", (snapshot) => {
+        const TodoList = [];
+        snapshot.forEach((list) => {
+          const key = list.key;
+          const datas = list.val();
+
+          console.log(key,"recived datas--->", datas);
+          TodoList.push({    key: key,
+            time: datas.time,
+            priority: datas.priority,
+            title: datas.title,
+            desc: datas.desc,
+            date: datas.date,
+            isDone: datas.isDone,
+            todoID:datas.todoID})
+         
+
+          // var _today = new Date();
+          // let todoDate = moment(_today).format("DD-MM-YYYY");
+          // console.log("todoDate", todoDate);
+          // let _sendDate = datas.date;
+
+          // if (todoDate == _sendDate) {
+          //   TodoList.push({
+          
+          //   });
+          // }
+        });
+        // SetTodo(TodoList);
+        // SetData(TodoList)
+      });
+    }
     getList();
   }, []);
 
